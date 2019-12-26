@@ -1,14 +1,10 @@
 import csv
+import numpy as np
+import pandas as pd
 import random
+from keras.utils.np_utils import to_categorical
 import matplotlib.pyplot as plt
 
-def input_data(file):
-    with open(file,'r') as myfile:
-        fileCsv = csv.reader(myfile)
-        fileVec = []
-        for i in fileCsv:
-            fileVec.append(i[1:])
-    return fileVec
 def output_res(resList,file):
     with open(file,'w') as myfile:
         mywriter = csv.writer(myfile)
@@ -22,21 +18,18 @@ def gen_res():
         resList.append(resCol)
     return resList
 
-def picList2Vec(picList):
-    picVec = []
-    for i in range(0,784,28):
-        picVec.append(picList[i:i+28])
-    return picVec
-def plt_pic(picVec):
-    plt.imshow(picVec, interpolation="none", cmap="afmhot")
-    plt.show()
 
 
 
 if __name__ == '__main__':
     #x = gen_res()
     #output_res(x,'res.csv')
-    fileVec = input_data('trainTest.csv')
-    picList1 = fileVec[1]
-    picVec1 = picList2Vec(picList1)
-    plt_pic(picVec1)
+    trainTest = pd.read_csv('trainTest.csv')
+    trainTest_Y = trainTest['label']
+    trainTest_X = trainTest.drop(labels = ['label'],axis = 1)
+    trainTest_X = trainTest_X/255.0
+    picVec2 = trainTest_X.values.reshape(-1,28,28,1)
+    print(picVec2[0][:,:,0])
+    #trainTest_Y = to_categorical(trainTest_Y,num_classes=10)
+    p2 = plt.imshow(picVec2[0][:,:,0])
+    plt.show()
